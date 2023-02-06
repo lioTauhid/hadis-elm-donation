@@ -168,17 +168,17 @@ Widget roundButton(String text, Color background, Color textColor,
     {Function()? onPressed}) {
   return MaterialButton(
       elevation: 0,
-      color: alternate,
+      color: background,
       height: 50,
       minWidth: 50,
       padding: EdgeInsets.all(10),
-      onPressed: () {},
+      onPressed: onPressed,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(100.0),
       ),
       child: Text(
         text,
-        style: TextStyle(color: white, fontSize: fontVerySmall),
+        style: TextStyle(color: textColor, fontSize: fontVerySmall),
       ));
 }
 

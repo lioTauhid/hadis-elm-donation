@@ -40,7 +40,9 @@ class _CardPageState extends State<CardPage> {
             children: [
               MaterialButton(
                 elevation: 0,
-                onPressed: () {},
+                onPressed: () {
+                  Get.back();
+                },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -50,7 +52,7 @@ class _CardPageState extends State<CardPage> {
                     ),
                     SizedBox(width: 5),
                     Text(
-                      'HOME',
+                      'BACK',
                       style: TextStyle(color: white),
                     )
                   ],

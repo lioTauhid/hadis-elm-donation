@@ -1,4 +1,6 @@
+import 'package:elm/mvc/view/page/home.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import '../../../constant/color.dart';
 import '../../../constant/value.dart';
@@ -19,7 +21,9 @@ class PaymentDone extends StatelessWidget {
             children: [
               MaterialButton(
                 elevation: 0,
-                onPressed: () {},
+                onPressed: () {
+                  Get.to(Home());
+                },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -100,7 +104,6 @@ class PaymentDone extends StatelessWidget {
                       child: normalButton('PAYMENT COMPLETE', alternate, white,
                           onPressed: () {}),
                     ),
-
                     Column(
                       children: [
                         Text('Saturday Circle Progress',
@@ -125,7 +128,12 @@ class PaymentDone extends StatelessWidget {
                               animationDuration: 1000,
                               percent: 0.4,
                               center: Text("40.0%"),
-                              leading: Text("   £80.00", style: TextStyle(color: primaryColor, fontSize: fontVerySmall),),
+                              leading: Text(
+                                "   £80.00",
+                                style: TextStyle(
+                                    color: primaryColor,
+                                    fontSize: fontVerySmall),
+                              ),
                               // trailing: Text("40.0%"),
                               barRadius: Radius.circular(20),
                               progressColor: primaryColor,

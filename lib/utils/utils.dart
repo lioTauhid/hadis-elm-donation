@@ -4,9 +4,9 @@ import '../constant/color.dart';
 
 class Utils {
   static final apiHeader = {
+    "Access-Control-Allow-Origin": "*",
     'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'Authorization': 'Bearer ${''}'
+    'Accept': '*/*'
   };
 
   static void showLoading([String? message]) {

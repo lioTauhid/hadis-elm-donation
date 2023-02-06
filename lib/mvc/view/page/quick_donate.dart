@@ -4,11 +4,13 @@ import 'package:wheel_chooser/wheel_chooser.dart';
 
 import '../../../constant/color.dart';
 import '../../../constant/value.dart';
+import '../../model/projects.dart';
 import '../widget/custom_widget.dart';
 import 'card_machine_page.dart';
 
 class QuickDonate extends StatefulWidget {
-  const QuickDonate({Key? key}) : super(key: key);
+  const QuickDonate(this.projectList, {Key? key}) : super(key: key);
+  final List<dynamic> projectList;
 
   @override
   State<QuickDonate> createState() => _QuickDonateState();
@@ -17,7 +19,31 @@ class QuickDonate extends StatefulWidget {
 class _QuickDonateState extends State<QuickDonate> {
   String payType = "Card"; //if you want to set default value
   bool withGift = false;
-  List<String> donateType = ['Choose Donation Type', 'Sadaqah', 'Lillah', 'Zakah', 'Zakatul Fitr'];
+
+  // List<String> donateType = ['Choose Donation Type', 'Sadaqah', 'Lillah', 'Zakah', 'Zakatul Fitr'];
+
+  List<int> moneyList = [5, 10, 25, 50];
+  int moneySelected = 0;
+  int wheelSelected = 0;
+  String selectedName = '';
+  int totals = 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    selectedName = widget.projectList[0].name;
+    calcTotal();
+  }
+
+  void calcTotal() {
+    if (withGift) {
+      totals = moneySelected + wheelSelected + 20;
+    } else {
+      totals = moneySelected + wheelSelected;
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +57,9 @@ class _QuickDonateState extends State<QuickDonate> {
             children: [
               MaterialButton(
                 elevation: 0,
-                onPressed: () {},
+                onPressed: () {
+                  Get.back();
+                },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -97,12 +125,12 @@ class _QuickDonateState extends State<QuickDonate> {
                             SizedBox(width: 10),
                             Expanded(
                               child: DropdownButton<String>(
-                                items: donateType.map((dynamic val) {
+                                items: widget.projectList.map((dynamic val) {
                                   return DropdownMenuItem<String>(
-                                    value: val,
+                                    value: val.name,
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
-                                      child: Text(val,
+                                      child: Text(val.name,
                                           style: TextStyle(
                                               color: white,
                                               fontSize: fontVerySmall)),
@@ -113,11 +141,16 @@ class _QuickDonateState extends State<QuickDonate> {
                                 underline: SizedBox(),
                                 isExpanded: true,
                                 dropdownColor: primaryColor,
-                                value: donateType[0],
+                                value: selectedName,
                                 style: TextStyle(
                                     color: primaryColor,
                                     fontSize: fontVerySmall),
-                                onChanged: (value) {},
+                                onChanged: (value) {
+                                  setState(() {
+                                    print(value);
+                                    selectedName = value!;
+                                  });
+                                },
                               ),
                             ),
                           ],
@@ -128,14 +161,14 @@ class _QuickDonateState extends State<QuickDonate> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          roundButton('\$5', alternate, white,
-                              onPressed: () {}),
-                          roundButton('\$5', alternate, white,
-                              onPressed: () {}),
-                          roundButton('\$5', alternate, white,
-                              onPressed: () {}),
-                          roundButton('\$5', alternate, white,
-                              onPressed: () {}),
+                          for (int i in moneyList)
+                            roundButton('\$$i', primaryColor, white,
+                                onPressed: () {
+                              setState(() {
+                                moneySelected = i;
+                                calcTotal();
+                              });
+                            }),
                           Container(
                             height: 55,
                             width: 200,
@@ -157,17 +190,26 @@ class _QuickDonateState extends State<QuickDonate> {
                                   child: Container(
                                     decoration: BoxDecoration(
                                         color: primaryColor,
-                                        borderRadius: BorderRadius.circular(10)),
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
                                     child: WheelChooser(
-                                      onValueChanged: (s) => print(s),
+                                      onValueChanged: (s) {
+                                        setState(() {
+                                          wheelSelected = int.parse(
+                                              s.toString().split('\$')[1]);
+                                          calcTotal();
+                                          print(s);
+                                          print(totals);
+                                        });
+                                      },
                                       datas: [
-                                        for (int i = 1; i < 20; i++) '\$$i'
+                                        for (int i = 0; i < 50; i++) '\$$i'
                                       ],
                                       itemSize: 20,
                                       magnification: 1.2,
                                       selectTextStyle: TextStyle(color: white),
                                       unSelectTextStyle:
-                                          TextStyle(color: white),
+                                          TextStyle(color: primaryBackground),
                                     ),
                                   ),
                                 ),
@@ -350,7 +392,7 @@ class _QuickDonateState extends State<QuickDonate> {
                                           border: Border.all(
                                               color: primaryColor, width: 1.5)),
                                       alignment: Alignment.center,
-                                      child: Text('£80.00',
+                                      child: Text('£$totals',
                                           style: TextStyle(
                                               color: white,
                                               fontSize: fontSmall)),
@@ -367,6 +409,9 @@ class _QuickDonateState extends State<QuickDonate> {
                                 height: 50,
                                 child: normalButton("Pay Now", alternate, white,
                                     onPressed: () {
+                                  print(selectedName);
+                                  print(moneySelected);
+                                  print(wheelSelected);
                                   Get.to(const CardPage());
                                 })),
                           ),

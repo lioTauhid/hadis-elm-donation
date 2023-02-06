@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../constant/value.dart';
+import '../../controller/home_controller.dart';
 import '../widget/custom_widget.dart';
 import 'general_donation.dart';
 
 class Home extends StatelessWidget {
-  const Home({Key? key}) : super(key: key);
+  Home({Key? key}) : super(key: key);
+  HomeController homeController = Get.put(HomeController());
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +77,7 @@ class Home extends StatelessWidget {
                                 'DONATE',
                                 Colors.transparent,
                                 white, onPressed: () {
-                              Get.to(QuickDonate());
+                              Get.to(QuickDonate(homeController.projectList.value));
                             }),
                           ),
                           SizedBox(width: 50),
@@ -100,106 +102,130 @@ class Home extends StatelessWidget {
                       ),
                     ),
                     Expanded(
-                      child: ListView.builder(
-                          itemCount: 10,
-                          padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                          itemBuilder: (context, index) {
-                            return Container(
-                              height: 160,
-                              margin: const EdgeInsets.only(bottom: 15.0),
-                              decoration: BoxDecoration(
-                                color: white,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.all(20),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Expanded(
-                                      flex: 2,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: Image.asset(
-                                          'assets/new 1.png',
-                                          height: Size.infinite.height,
-                                          width: Size.infinite.width,
-                                          fit: BoxFit.cover,
+                      child: Obx(() {
+                        return ListView.builder(
+                            itemCount: homeController.projectList.length,
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 40.0),
+                            itemBuilder: (context, index) {
+                              return Container(
+                                height: 160,
+                                margin: const EdgeInsets.only(bottom: 15.0),
+                                decoration: BoxDecoration(
+                                  color: white,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.all(20),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Expanded(
+                                        flex: 2,
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          child: Image.asset(
+                                            'assets/new 1.png',
+                                            height: Size.infinite.height,
+                                            width: Size.infinite.width,
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    SizedBox(width: 15),
-                                    Expanded(
-                                      flex: 6,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Expanded(
-                                            child: SingleChildScrollView(
-                                              scrollDirection: Axis.vertical,
-                                              child: Column(
-                                                mainAxisSize: MainAxisSize.max,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    "Mosque Project",
-                                                    style: TextStyle(
-                                                        fontSize: fontMedium,
-                                                        color: primaryColor,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                  Text('Rebuild the Dome',
+                                      SizedBox(width: 15),
+                                      Expanded(
+                                        flex: 6,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Expanded(
+                                              child: SingleChildScrollView(
+                                                scrollDirection: Axis.vertical,
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.max,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      homeController.projectList
+                                                          .value[index].name,
                                                       style: TextStyle(
                                                           fontSize: fontMedium,
-                                                          color: primaryText,
+                                                          color: primaryColor,
                                                           fontWeight:
-                                                              FontWeight.bold)),
-                                                  Text(
-                                                      'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry',
-                                                      style: TextStyle(
-                                                          fontSize:
-                                                              fontVerySmall,
-                                                          color: primaryText,
-                                                          fontWeight:
-                                                              FontWeight.bold)),
-                                                ],
+                                                              FontWeight.bold),
+                                                    ),
+                                                    Text(
+                                                        homeController
+                                                            .projectList
+                                                            .value[index]
+                                                            .title,
+                                                        style: TextStyle(
+                                                            fontSize:
+                                                                fontMedium,
+                                                            color: primaryText,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                    Text(
+                                                        homeController
+                                                            .projectList
+                                                            .value[index]
+                                                            .description,
+                                                        style: TextStyle(
+                                                            fontSize:
+                                                                fontVerySmall,
+                                                            color: primaryText,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                  ],
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              cartBottomItem(
-                                                  'Target Amount', ''),
-                                              cartBottomItem('Zakat', ''),
-                                              SizedBox(
-                                                  height: 40,
-                                                  width: 125,
-                                                  child: normalButton(
-                                                      "Donate Now",
-                                                      alternate,
-                                                      white, onPressed: () {
-                                                    Get.to(
-                                                        const GeneralDonation());
-                                                  })),
-                                            ],
-                                          ),
-                                        ],
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                cartBottomItem(
+                                                    'Target Amount',
+                                                    homeController.projectList
+                                                        .value[index].needAmount
+                                                        .toString()),
+                                                // cartBottomItem('Zakat', homeController.projectList.value[index].zakat),
+                                                cartBottomItem(
+                                                    'Zakat', 'not eligible'),
+                                                SizedBox(
+                                                    height: 40,
+                                                    width: 125,
+                                                    child: normalButton(
+                                                        "Donate Now",
+                                                        alternate,
+                                                        white, onPressed: () {
+                                                      Get.to(GeneralDonation(
+                                                          homeController
+                                                              .projectList
+                                                              .value[index]));
+                                                    })),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            );
-                          }),
+                              );
+                            });
+                      }),
                     )
                   ],
                 ),
@@ -244,7 +270,7 @@ class Home extends StatelessWidget {
                     type,
                     style: TextStyle(fontSize: 10, color: primaryText),
                   ),
-                  Text('\$12,000',
+                  Text('\$$amount',
                       style: TextStyle(
                           fontSize: fontVerySmall,
                           color: primaryText,

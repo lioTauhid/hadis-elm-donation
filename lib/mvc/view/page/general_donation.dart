@@ -4,11 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wheel_chooser/wheel_chooser.dart';
 
+import '../../model/projects.dart';
 import '../widget/custom_widget.dart';
 import 'general_payment.dart';
 
-class GeneralDonation extends StatelessWidget {
-  const GeneralDonation({Key? key}) : super(key: key);
+class GeneralDonation extends StatefulWidget {
+  const GeneralDonation(this.project, {Key? key}) : super(key: key);
+  final Project project;
+
+  @override
+  State<GeneralDonation> createState() => _GeneralDonationState();
+}
+
+class _GeneralDonationState extends State<GeneralDonation> {
+  List<int> moneyList = [5, 10, 25, 50];
+  int moneySelected = 0;
+  int wheelSelected = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +33,9 @@ class GeneralDonation extends StatelessWidget {
             children: [
               MaterialButton(
                 elevation: 0,
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -64,12 +77,12 @@ class GeneralDonation extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'YOUTH PROJECT',
+                            widget.project.name.toString(),
                             style: TextStyle(
                                 color: white, fontSize: fontVerySmall),
                           ),
                           Text(
-                            'Saturday Circles',
+                            widget.project.title.toString(),
                             style:
                                 TextStyle(color: white, fontSize: fontVeryBig),
                           ),
@@ -94,27 +107,27 @@ class GeneralDonation extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              carTopItem('Target Amount', ''),
+                              carTopItem('Target Amount',
+                                  widget.project.needAmount.toString()),
                               SizedBox(width: 8),
-                              carTopItem('Zakat', ''),
+                              carTopItem(
+                                  'Zakat', widget.project.zakat.toString()),
                             ],
                           ),
-                          Text(
-                              "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod et dolore magna aliquam erat volutpat. Loremipsum dolor sit amet, consectetuer adipiscing elit,Ssed diam nonummy nibh euismod tincidunt ut laoreet dolore magnaaliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrudexerci tation ullamcorper suscipit lobortis nisl ut aliquip ex eacommodo consequat. Duis autem vel eum",
+                          Text(widget.project.description.toString(),
                               textAlign: TextAlign.justify,
                               style:
                                   TextStyle(fontSize: fontSmall, color: white)),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              roundButton('\$5', alternate, white,
-                                  onPressed: () {}),
-                              roundButton('\$5', alternate, white,
-                                  onPressed: () {}),
-                              roundButton('\$5', alternate, white,
-                                  onPressed: () {}),
-                              roundButton('\$5', alternate, white,
-                                  onPressed: () {}),
+                              for (int i in moneyList)
+                                roundButton('\$$i', white, alternate,
+                                    onPressed: () {
+                                  setState(() {
+                                    moneySelected = i;
+                                  });
+                                }),
                               Container(
                                 height: 60,
                                 width: 250,
@@ -136,16 +149,22 @@ class GeneralDonation extends StatelessWidget {
                                       child: Container(
                                         color: white,
                                         child: WheelChooser(
-                                          onValueChanged: (s) => print(s),
+                                          onValueChanged: (s) {
+                                            setState(() => wheelSelected =
+                                                int.parse(s
+                                                    .toString()
+                                                    .split('\$')[1]));
+                                            print(s);
+                                          },
                                           datas: [
-                                            for (int i = 1; i < 20; i++) '\$$i'
+                                            for (int i = 0; i < 50; i++) '\$$i'
                                           ],
                                           itemSize: 20,
                                           magnification: 1.2,
                                           selectTextStyle:
                                               TextStyle(color: primaryColor),
                                           unSelectTextStyle:
-                                              TextStyle(color: primaryColor),
+                                              TextStyle(color: textSecondary),
                                         ),
                                       ),
                                     ),
@@ -161,17 +180,37 @@ class GeneralDonation extends StatelessWidget {
                                 height: 55,
                                 width: 280,
                                 child: borderButton(
-                                    'ADD GIFT AID', Colors.transparent, white, white,
-                                    onPressed: () {}),
+                                    'ADD GIFT AID',
+                                    Colors.transparent,
+                                    white,
+                                    white, onPressed: () {
+                                  if (wheelSelected != 0) {
+                                    Get.to(GeneralPayment(wheelSelected, true,
+                                        widget.project.id!));
+                                    return;
+                                  }
+                                  if (moneySelected != 0) {
+                                    Get.to(GeneralPayment(moneySelected, true,
+                                        widget.project.id!));
+                                  }
+                                }),
                               ),
                               SizedBox(
                                   height: 55,
                                   width: 280,
-                                  child: normalButton(
-                                      "Pay Now", alternate, white,
-                                      onPressed: () {
-                                        Get.to(const GeneralPayment());
-                                      })),
+                                  child:
+                                      normalButton("Pay Now", alternate, white,
+                                          onPressed: () {
+                                    if (wheelSelected != 0) {
+                                      Get.to(GeneralPayment(wheelSelected,
+                                          false, widget.project.id!));
+                                      return;
+                                    }
+                                    if (moneySelected != 0) {
+                                      Get.to(GeneralPayment(moneySelected,
+                                          false, widget.project.id!));
+                                    }
+                                  })),
                             ],
                           ),
                         ],
@@ -221,7 +260,7 @@ class GeneralDonation extends StatelessWidget {
                     type,
                     style: TextStyle(fontSize: 10, color: white),
                   ),
-                  Text('\$12,000',
+                  Text(amount,
                       style: TextStyle(
                           fontSize: fontVerySmall,
                           color: white,

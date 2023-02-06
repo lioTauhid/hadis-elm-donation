@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:elm/utils/utils.dart';
 import 'package:http/http.dart' as http;
 
 import '../../constant/value.dart';
@@ -9,11 +10,11 @@ import 'api_exception.dart';
 
 class ApiClient {
   //GET
-  Future<dynamic> get(String endPoint, {dynamic header, dynamic query}) async {
-    var uri = Uri.parse(baseUrl + endPoint).replace(queryParameters: query);
+  Future<dynamic> get(String endPoint) async {
+    var uri = Uri.parse(baseUrl + endPoint);
+    print(uri);
     try {
-      var response =
-          await http.get(uri, headers: header).timeout(Duration(seconds: 20));
+      var response = await http.get(uri).timeout(Duration(seconds: 20));
       return _processResponse(response);
     } on SocketException {
       throw ProcessDataException("No internet connection", uri.toString());
@@ -53,6 +54,7 @@ class ApiClient {
       throw ProcessDataException("Not responding in time", uri.toString());
     }
   }
+
   //DELETE
 
   dynamic _processResponse(http.Response response) {

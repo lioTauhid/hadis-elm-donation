@@ -7,7 +7,12 @@ import '../widget/custom_widget.dart';
 import 'card_machine_page.dart';
 
 class GeneralPayment extends StatefulWidget {
-  const GeneralPayment({Key? key}) : super(key: key);
+  GeneralPayment(this.moneySelected, this.withGift, this.id, {Key? key})
+      : super(key: key);
+  int moneySelected;
+  int id;
+
+  bool withGift;
 
   @override
   State<GeneralPayment> createState() => _GeneralPaymentState();
@@ -15,7 +20,20 @@ class GeneralPayment extends StatefulWidget {
 
 class _GeneralPaymentState extends State<GeneralPayment> {
   String payType = "Card"; //if you want to set default value
-  bool withGift = false;
+  // bool withGift = false;
+  int totals = 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (widget.withGift) {
+      totals = widget.moneySelected + 20;
+    } else {
+      totals = widget.moneySelected;
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +47,9 @@ class _GeneralPaymentState extends State<GeneralPayment> {
             children: [
               MaterialButton(
                 elevation: 0,
-                onPressed: () {},
+                onPressed: () {
+                  Get.back();
+                },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -39,7 +59,7 @@ class _GeneralPaymentState extends State<GeneralPayment> {
                     ),
                     SizedBox(width: 5),
                     Text(
-                      'HOME',
+                      'BACK',
                       style: TextStyle(color: white),
                     )
                   ],
@@ -128,23 +148,26 @@ class _GeneralPaymentState extends State<GeneralPayment> {
                                       style: TextStyle(
                                           color: primaryColor,
                                           fontSize: fontSmall))),
-                              Expanded(
-                                flex: 5,
-                                child: Container(
-                                  height: double.maxFinite,
-                                  decoration: BoxDecoration(
-                                      // color: textSecondary,
-                                      border: Border(
-                                    left: BorderSide(
-                                        color: primaryColor, width: 1.5),
-                                  )),
-                                  alignment: Alignment.center,
-                                  child: Text('£80.00 + £20.00',
-                                      style: TextStyle(
-                                          color: primaryColor,
-                                          fontSize: fontSmall)),
-                                ),
-                              ),
+                              widget.withGift
+                                  ? Expanded(
+                                      flex: 5,
+                                      child: Container(
+                                        height: double.maxFinite,
+                                        decoration: BoxDecoration(
+                                            // color: textSecondary,
+                                            border: Border(
+                                          left: BorderSide(
+                                              color: primaryColor, width: 1.5),
+                                        )),
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                            '£${widget.moneySelected} + £20.00',
+                                            style: TextStyle(
+                                                color: primaryColor,
+                                                fontSize: fontSmall)),
+                                      ),
+                                    )
+                                  : SizedBox(),
                               Expanded(
                                 flex: 5,
                                 child: Container(
@@ -157,7 +180,7 @@ class _GeneralPaymentState extends State<GeneralPayment> {
                                       border: Border.all(
                                           color: primaryColor, width: 1.5)),
                                   alignment: Alignment.center,
-                                  child: Text('£80.00',
+                                  child: Text('£$totals',
                                       style: TextStyle(
                                           color: white, fontSize: fontSmall)),
                                 ),
@@ -173,15 +196,15 @@ class _GeneralPaymentState extends State<GeneralPayment> {
                                   fontSize: fontVerySmall)),
                           onPressed: () {
                             setState(() {
-                              withGift == true
-                                  ? withGift = false
-                                  : withGift = true;
+                              widget.withGift == true
+                                  ? widget.withGift = false
+                                  : widget.withGift = true;
                             });
                           },
                         ),
                       ],
                     ),
-                    withGift
+                    widget.withGift
                         ? Column(
                             children: [
                               SizedBox(
